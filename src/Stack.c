@@ -66,6 +66,7 @@ void LinkedStack_destroy(LinkedStack * stack)
     while (!LinkedStack_empty(stack)) {
         _StackNode * n = stack->head;
         stack->head = n->next;
+        free(n->val);
         free(n);
     }
 

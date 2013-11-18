@@ -20,26 +20,26 @@ typedef struct {
 
 double RPN_getOperand(LinkedStack * stack)
 {
-    BoxedDouble * v = LinkedStack_pop(stack);
+    double * v = LinkedStack_pop(stack);
     if (v == NULL) {
         LOG_DEBUG("FAILED TO POP NUMBER\n");
         return 0.0;
     }
-    double val = v->val;
+    double val = *v;
     free(v);
     return val;
 }
 
 void RPN_enterNumber(LinkedStack * stack, double value)
 {
-    BoxedDouble * box = malloc(sizeof(BoxedDouble));
-    if (box == NULL) {
-        return;
-    }
-    box->val = value;
+    double * box = malloc(sizeof(double));
+    CHECK_MEM(box);
+    *box = value;
     if (LinkedStack_push(stack, box) == -1) {
         LOG_DEBUG("FAILED TO PUSH NUMBER\n");
     }
+error:
+    return;
 }
 
 double RPN_binaryOp(LinkedStack * stack, int op_type)
