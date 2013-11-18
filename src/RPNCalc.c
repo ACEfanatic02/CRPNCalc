@@ -145,7 +145,6 @@ TokenList * getTokensFromStdin()
 
     } while (token_str);
 
-    free(token_str);
     free(line);
 
     return list;
@@ -155,9 +154,6 @@ error:
     }
     if (line != NULL) {
         free(line);
-    }
-    if (token_str != NULL) {
-        free(token_str);
     }
     return NULL;
 }
