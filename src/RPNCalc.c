@@ -91,19 +91,38 @@ int isQuitCommand(char * str) {
 
 static const char * WHITESPACE_CHARS = " \f\n\r\t\v";
 
+char * copyString(char * str)
+{
+    char * s = NULL;
+    CHECK(str != NULL, "copyString given NULL");
+    size_t len = strlen(str);
+
+    s = malloc(len + 1);
+
+    strncpy(s, str, len);
+
+    return s;
+error:
+    if (s != NULL) {
+        free(s);
+    }
+    return NULL;
+}
+
 TokenList * getTokensFromStdin()
 {
-    TokenList * list = TokenList_new();
-    CHECK_MEM(list);
-
     char * line = NULL;
     size_t len = 0;
+    char * saveptr = NULL;
+    char * token_str = NULL;
+
+    TokenList * list = TokenList_new();
+    CHECK_MEM(list);
 
     CHECK_DEBUG(getline(&line, &len, stdin) != -1, "Failed to get line.")
     CHECK_MEM(line)
 
-    char * saveptr;
-    char * token_str = strtok_r(line, WHITESPACE_CHARS, &saveptr);
+    token_str = strtok_r(line, WHITESPACE_CHARS, &saveptr);
     do {
         if (token_str == NULL) {
             break;
@@ -119,7 +138,7 @@ TokenList * getTokensFromStdin()
             TokenList_appendToken(list, Token_new(type, &num));
         } else {
             type = isOperator(token_str) ? TOKEN_OPERATOR : TOKEN_OTHER;
-            TokenList_appendToken(list, Token_new(type, token_str));
+            TokenList_appendToken(list, Token_new(type, copyString(token_str)));
         }
 
         token_str = strtok_r(NULL, WHITESPACE_CHARS, &saveptr);
@@ -127,11 +146,18 @@ TokenList * getTokensFromStdin()
     } while (token_str);
 
     free(token_str);
+    free(line);
 
     return list;
 error:
     if (list != NULL) {
         TokenList_destroy(list);
+    }
+    if (line != NULL) {
+        free(line);
+    }
+    if (token_str != NULL) {
+        free(token_str);
     }
     return NULL;
 }

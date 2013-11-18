@@ -1,5 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "dbg.h"
+
 #include "TokenList.h"
 
 _TokenListNode * TokenListNode_new(Token * token)
@@ -142,8 +145,7 @@ Token * Token_new(int type, void * val)
             token->num = *(double *)(val);
             break;
         default:
-            // LOG_ERROR("Unknown Token Type");
-            goto error;
+            SENTINEL("Unknown Token Type");
     }
 
     return token;
@@ -160,6 +162,11 @@ void Token_destroy(Token * token)
 {
     if (token == NULL) {
         return;
+    }
+
+    if (token->type != TOKEN_NUMBER && token->str != NULL) {
+        // free contained string;
+        free(token->str);
     }
 
     free(token);
