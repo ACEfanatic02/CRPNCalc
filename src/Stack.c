@@ -1,13 +1,14 @@
 #include <stdlib.h>
+#include <stdio.h>
+
+#include "dbg.h"
 
 #include "Stack.h"
 
 LinkedStack * LinkedStack_new()
 {
     LinkedStack * stack = malloc(sizeof(LinkedStack));
-    if (stack == NULL) {
-        goto error;
-    }
+    CHECK_MEM(stack);
     stack->head = NULL;
 
     return stack;
@@ -18,32 +19,28 @@ error:
 
 int LinkedStack_push(LinkedStack * stack, void * value)
 {
-    if (stack == NULL) {
-        goto error;
-    }
+    CHECK(stack != NULL, "Push given NULL stack.");
 
     _StackNode * node = malloc(sizeof(_StackNode));
-    if (node == NULL) {
-        goto error;
-    }
+
+    CHECK_MEM(node);
+
     node->val = value;
     node->next = stack->head;
     stack->head = node;
 
+    return 0;
+    
 error:
     return -1;
 }
 
 void * LinkedStack_pop(LinkedStack * stack)
 {
-    if (stack == NULL) {
-        goto error;
-    }
+    CHECK(stack != NULL, "Pop given NULL stack.");
 
     _StackNode * popped = stack->head;
-    if (popped == NULL) {
-        goto error;
-    }
+    CHECK_DEBUG(popped != NULL, "Popped NULL node.")
 
     stack->head = popped->next;
     void * rv = popped->val;
@@ -51,6 +48,7 @@ void * LinkedStack_pop(LinkedStack * stack)
 
     return rv;
 error:
+    LOG_DEBUG("POP FAILED\n");
     return NULL;
 }
 

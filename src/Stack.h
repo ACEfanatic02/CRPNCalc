@@ -2,9 +2,12 @@
  * Stack.h
  */
 
+#ifndef STACK_H
+#define STACK_H
+
 typedef struct _StackNode {
     void * val;
-    struct _StackNode next;
+    struct _StackNode * next;
 } _StackNode;
 
 typedef struct {
@@ -15,7 +18,7 @@ typedef struct {
 LinkedStack * LinkedStack_new();
 
 /* Push an element onto the stack. */
-int * LinkedStack_push(LinkedStack * stack, void * value);
+int LinkedStack_push(LinkedStack * stack, void * value);
 
 /* Pop top element of stack. */
 void * LinkedStack_pop(LinkedStack * stack);
@@ -24,3 +27,5 @@ void * LinkedStack_pop(LinkedStack * stack);
 int LinkedStack_empty(LinkedStack * stack);
 
 void LinkedStack_destroy(LinkedStack * stack);
+
+#endif
