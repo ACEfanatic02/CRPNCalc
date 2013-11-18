@@ -14,20 +14,16 @@
 #define OP_MUL 2
 #define OP_DIV 3
 
-typedef struct {
-    double val;
-} BoxedDouble;
-
 double RPN_getOperand(LinkedStack * stack)
 {
     double * v = LinkedStack_pop(stack);
-    if (v == NULL) {
-        LOG_DEBUG("FAILED TO POP NUMBER\n");
-        return 0.0;
-    }
+    CHECK_DEBUG(v != NULL, "Failed to pop number.");
+
     double val = *v;
     free(v);
     return val;
+error:
+    return 0.0;
 }
 
 void RPN_enterNumber(LinkedStack * stack, double value)
@@ -35,10 +31,12 @@ void RPN_enterNumber(LinkedStack * stack, double value)
     double * box = malloc(sizeof(double));
     CHECK_MEM(box);
     *box = value;
-    if (LinkedStack_push(stack, box) == -1) {
-        LOG_DEBUG("FAILED TO PUSH NUMBER\n");
-    }
+
+    CHECK(LinkedStack_push(stack, box) != -1, "Failed to push number to stack.");
 error:
+    if (box != NULL) {
+        free(box);
+    }
     return;
 }
 
@@ -86,7 +84,7 @@ int isOperator(char * str) {
 }
 
 int isQuitCommand(char * str) {
-    return *str == 'q';
+    return *str == 'q' || *str == 'Q';
 }
 
 static const char * WHITESPACE_CHARS = " \f\n\r\t\v";
@@ -200,10 +198,12 @@ int main(int argc, char * argv[])
             }
 
             double result = 0.0;
-            switch (cur->type) {
+            switch (cur->type) 
+            {
                 case TOKEN_OPERATOR:
                     LOG_DEBUG("OPERATOR: %s\n", cur->str);
-                    switch (*(cur->str)) {
+                    switch (*(cur->str)) 
+                    {
                         case '+':
                             result = RPN_binaryOp(stack, OP_ADD);
                             break;
