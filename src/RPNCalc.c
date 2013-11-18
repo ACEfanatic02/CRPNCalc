@@ -63,13 +63,10 @@ double RPN_binaryOp(LinkedStack * stack, int op_type)
             result = b / a;
             break;
         default:
-            SENTINEL("UNKNOWN OPERATOR");
+            SENTINEL_DIE("UNKNOWN OPERATOR");
     }
     RPN_enterNumber(stack, result);
     return result;
-
-error:
-    exit(EXIT_FAILURE);
 }
 
 int isNumber(char * str) {
@@ -92,7 +89,7 @@ int isQuitCommand(char * str) {
     return *str == 'q';
 }
 
-const char * WHITESPACE_CHARS = " \f\n\r\t\v";
+static const char * WHITESPACE_CHARS = " \f\n\r\t\v";
 
 TokenList * getTokensFromStdin()
 {
@@ -128,6 +125,8 @@ TokenList * getTokensFromStdin()
         token_str = strtok_r(NULL, WHITESPACE_CHARS, &saveptr);
 
     } while (token_str);
+
+    free(token_str);
 
     return list;
 error:
@@ -204,13 +203,16 @@ int main(int argc, char * argv[])
                     break;
                 case TOKEN_OTHER:
                     if (isQuitCommand(cur->str)) {
+                        LinkedStack_destroy(stack);
+                        TokenList_destroy(tokens);
                         return EXIT_SUCCESS;
                     }
                     break;
                 default:
-                    assert(0);
+                    SENTINEL_DIE("Unknown token type.");
             }
         }
+        TokenList_destroy(tokens);
     }
 
     return EXIT_SUCCESS;

@@ -2,6 +2,7 @@
 #ifndef TOKENLIST_H
 #define TOKENLIST_H
 
+// Token types.
 #define TOKEN_OPERATOR  0
 #define TOKEN_NUMBER    1
 #define TOKEN_OTHER     2
@@ -9,6 +10,7 @@
 typedef struct {
     int type;
     union {
+        // Number tokens contain num, all others contain str.
         char * str;
         double num;
     };

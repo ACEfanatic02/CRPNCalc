@@ -32,6 +32,10 @@
 // Log the message M if this branch is ever reached, then jump to error.
 #define SENTINEL(M, ...) { LOG_ERROR(M, ##__VA_ARGS__); errno=0; goto error; }
 
+// Varients of CHECK and SENTINEL that exit rather than jumping to error.
+#define CHECK_DIE(A, M, ...) if(!(A)) { LOG_ERROR(M, ##__VA_ARGS__); exit(EXIT_FAILURE); }
+#define SENTINEL_DIE(M, ...) { LOG_ERROR(M, ##__VA_ARGS__); exit(EXIT_FAILURE); }
+
 // Check that a pointer given by (m/c/re)alloc is valid.  Do not use for checking pointers given by user.
 #define CHECK_MEM(A) { CHECK(A, "Out of memory.") }
 // A varient of CHECK that uses debug level logging.  Use for errors you expect to occur in production and don't want spamming stderr.

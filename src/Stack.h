@@ -26,6 +26,7 @@ void * LinkedStack_pop(LinkedStack * stack);
 /* Check whether the stack is empty. */
 int LinkedStack_empty(LinkedStack * stack);
 
+/* Destroy a linked stack and its contents. */
 void LinkedStack_destroy(LinkedStack * stack);
 
 #endif
