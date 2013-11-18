@@ -8,9 +8,7 @@
 _TokenListNode * TokenListNode_new(Token * token)
 {
     _TokenListNode * node = malloc(sizeof(_TokenListNode));
-    if (node == NULL) {
-        goto error;
-    }
+    CHECK_MEM(node);
 
     node->token = token;
     node->next = NULL;
@@ -23,23 +21,21 @@ error:
 
 void TokenListNode_destroy(_TokenListNode * node)
 {
-    if (node == NULL) {
-        return;
-    }
+    CHECK_DEBUG(node != NULL, "Destroying NULL node");
 
     if (node->token != NULL) {
         Token_destroy(node->token);
     }
 
     free(node);
+error:
+    return;
 }
 
 TokenList * TokenList_new()
 {
     TokenList * list = malloc(sizeof(TokenList));
-    if (list == NULL) {
-        goto error;
-    }
+    CHECK_MEM(list)
 
     list->head = NULL;
     list->tail = NULL;
@@ -53,9 +49,7 @@ error:
 
 void TokenList_destroy(TokenList * list)
 {
-    if (list == NULL) {
-        return;
-    }
+    CHECK_DEBUG(list != NULL, "Destroying NULL list.");
 
     if (!(list->head == NULL) || !(list->tail == NULL)) {
         // Destroy contents of list
@@ -68,19 +62,16 @@ void TokenList_destroy(TokenList * list)
     }
 
     free(list);
+error:
+    return;
 }
 
 TokenList * TokenList_appendToken(TokenList * list, Token * token)
 {
-    if (list == NULL) {
-        goto error;
-    }
+    CHECK(list != NULL, "Append to null list.");
 
     _TokenListNode * node = TokenListNode_new(token);
-    if (node == NULL) {
-        printf("BUILT NULL NODE\n");
-        goto error;
-    }
+    CHECK(node != NULL, "Built NULL node.");
     
     if (list->head == NULL || list->tail == NULL) {
         // Empty list
@@ -100,10 +91,7 @@ error:
 
 Token * TokenList_popToken(TokenList * list)
 {
-    printf("POPPING TOKEN\n");
-    if (list == NULL) {
-        goto error;
-    }
+    CHECK(list != NULL, "Pop from NULL list.");
 
     _TokenListNode * node = list->tail;
     if (list->tail == list->head) {
@@ -125,14 +113,11 @@ error:
 Token * Token_new(int type, void * val)
 {
     Token * token = NULL;
-    if (val == NULL) {
-        goto error;
-    }
+    
+    CHECK(val != NULL, "Token_new with NULL value.");
 
     token = malloc(sizeof(Token));
-    if (token == NULL) {
-        goto error;
-    }
+    CHECK_MEM(token);
 
     token->type = type;
 
@@ -160,9 +145,7 @@ error:
 
 void Token_destroy(Token * token)
 {
-    if (token == NULL) {
-        return;
-    }
+    CHECK_DEBUG(token != NULL, "Destroying NULL token.");
 
     if (token->type != TOKEN_NUMBER && token->str != NULL) {
         // free contained string;
@@ -170,5 +153,7 @@ void Token_destroy(Token * token)
     }
 
     free(token);
+error:
+    return;
 }
 
