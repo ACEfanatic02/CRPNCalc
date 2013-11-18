@@ -33,11 +33,12 @@ void RPN_enterNumber(LinkedStack * stack, double value)
     *box = value;
 
     CHECK(LinkedStack_push(stack, box) != -1, "Failed to push number to stack.");
+    return;
+
 error:
     if (box != NULL) {
         free(box);
     }
-    return;
 }
 
 double RPN_binaryOp(LinkedStack * stack, int op_type)
