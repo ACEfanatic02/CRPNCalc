@@ -48,7 +48,6 @@ void * LinkedStack_pop(LinkedStack * stack)
 
     return rv;
 error:
-    LOG_DEBUG("POP FAILED\n");
     return NULL;
 }
 
@@ -59,9 +58,7 @@ int LinkedStack_empty(LinkedStack * stack)
 
 void LinkedStack_destroy(LinkedStack * stack)
 {
-    if (stack == NULL) {
-        return;
-    }
+    CHECK_DEBUG(stack != NULL, "Destroying NULL stack.");
 
     while (!LinkedStack_empty(stack)) {
         _StackNode * n = stack->head;
@@ -71,4 +68,6 @@ void LinkedStack_destroy(LinkedStack * stack)
     }
 
     free(stack);
+error:
+    return;
 }
