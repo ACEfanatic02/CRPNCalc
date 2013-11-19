@@ -28,20 +28,28 @@ typedef struct {
     int length;
 } TokenList;
 
+/* Create a new TokenListNode. */
 _TokenListNode * TokenListNode_new(Token * token);
 
+/* Destroy a TokenListNode. */
 void TokenListNode_destroy(_TokenListNode * node);
 
+/* Create a new TokenList. */
 TokenList * TokenList_new();
 
+/* Destroy a TokenList. */
 void TokenList_destroy(TokenList * list);
 
+/* Create and append a new token to given TokenList. */
 TokenList * TokenList_appendToken(TokenList * list, Token * token);
 
+/* Pop and return last token on given TokenList. */
 Token * TokenList_popToken(TokenList * list);
 
+/* Create a new Token. */
 Token * Token_new(int type, void * val);
 
+/* Destroy a Token. */
 void Token_destroy(Token * token);
 
 #endif
