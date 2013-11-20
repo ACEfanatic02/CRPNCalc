@@ -68,6 +68,27 @@ double RPN_binaryOp(LinkedStack * stack, int op_type)
     return result;
 }
 
+int tryParseDouble(char * str, double * rv)
+{
+    CHECK_DEBUG(str != NULL && rv != NULL, "NULL given to tryParseDouble.");
+
+    char * end = NULL;
+    double d = strtod(str, &end);
+
+    if (end == str) {
+        // No characters consumed.
+        LOG_DEBUG("Tried parsing non-double: %s", str);
+        return 0;
+    }
+    else {
+        *rv = d;
+        return 1;
+    }
+
+error:
+    return 0;   
+}
+
 int isNumber(char * str) {
     if (str == NULL) return 0;
 
@@ -130,16 +151,16 @@ TokenList * getTokensFromStdin()
         LOG_DEBUG("TOKEN STRING: \'%s\'\n", token_str);
 
         int type;
-        if (isNumber(token_str)) {
+        double num;
+        if (tryParseDouble(token_str, &num)) {
             type = TOKEN_NUMBER;
-            LOG_DEBUG("GOT NUMBER\n");
-            double num = atof(token_str);
             TokenList_appendToken(list, Token_new(type, &num));
-        } else {
+        }
+        else {
             type = isOperator(token_str) ? TOKEN_OPERATOR : TOKEN_OTHER;
             TokenList_appendToken(list, Token_new(type, copyString(token_str)));
         }
-
+        
         token_str = strtok_r(NULL, WHITESPACE_CHARS, &saveptr);
 
     } while (token_str);
