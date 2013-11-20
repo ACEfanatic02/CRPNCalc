@@ -89,18 +89,6 @@ error:
     return 0;   
 }
 
-int isNumber(char * str) {
-    if (str == NULL) return 0;
-
-    LOG_DEBUG("NUMBER CHECK: %s\n", str);
-    while (*str != '\0') {
-        if (!isdigit(*str++)) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
 int isOperator(char * str) {
     return (*str == '+' || *str == '-' || *str == '*' || *str == '/');
 }
@@ -160,7 +148,7 @@ TokenList * getTokensFromStdin()
             type = isOperator(token_str) ? TOKEN_OPERATOR : TOKEN_OTHER;
             TokenList_appendToken(list, Token_new(type, copyString(token_str)));
         }
-        
+
         token_str = strtok_r(NULL, WHITESPACE_CHARS, &saveptr);
 
     } while (token_str);
@@ -198,13 +186,6 @@ int main(int argc, char * argv[])
         }
 
         Token * cur = NULL;
-
-        // while (tokens->head != NULL) 
-        // {
-        //     printf("GETTING TOKEN\n");
-        //     cur = TokenList_popToken(tokens);
-        //     printf("GOT TOKEN: %p", cur);
-        // }
         _TokenListNode * node;
         for (node = tokens->head;
              node != NULL;
