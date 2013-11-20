@@ -24,5 +24,10 @@ class TestRPNCalcInterface(unittest.TestCase):
         expect = self._fmt_expect(7.5)
         self.assertIn(expect, r_out.split("\n"))
 
+    def test_handles_exponential_float_operands(self):
+        r_out, r_err = self._send_commands(["125e-2 0", "+"])
+        expect = self._fmt_expect(125e-2)
+        self.assertIn(expect, r_out.split("\n"))
+
 if __name__ == '__main__':
     unittest.main()
